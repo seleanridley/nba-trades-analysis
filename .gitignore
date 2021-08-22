@@ -1,0 +1,5 @@
+*.ini
+pickles/
+*.sh
+.ipynb_checkpoints/
+__pycache__/
