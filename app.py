@@ -1,15 +1,32 @@
 import streamlit as st
 from streamlit_agraph import agraph, TripleStore, Node, Edge, Config
-import numpy as np
-import pandas as pd
-import pickle
+import streamlit.components.v1 as components
+
+import importlib  
+d3_react_component = importlib.import_module("d3-react-component")
+
+nba_d3_component = d3_react_component.nba_d3_component
+
+
 from neo4j import GraphDatabase
 
-import nba_api
 from nba_api.stats.static import players
+import configparser
+
+def config(name):
+    config = configparser.ConfigParser()
+    config.read('database.ini')
+    params = [
+        config.get(name, 'host'),
+        config.get(name, 'port'),
+        config.get(name, 'user'),
+        config.get(name, 'password')
+    ]
+    return params
 
 def load_driver():
-    driver = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j', 'admin'))
+    host, port, user, password = config('NEO4J')
+    driver = GraphDatabase.driver(f'neo4j://{host}:{port}', auth=(user, password))
     return driver
 
 def get_triplets(tx):
@@ -52,4 +69,9 @@ def app():
     agraph(nodes, edges, config)
 
 if __name__=="__main__":
-    app()
+    title = 'NBA Trades Network'
+    st.markdown(title)
+    #components.html("<html><body><h1>Hello, World</h1></body></html>", width=200, height=200)
+    nba_d3_component()
+
+    #app()
