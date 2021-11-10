@@ -79,7 +79,7 @@ def my_component(name, key=None):
 
 _component_func = components.declare_component(
     "NBAD3Component",
-    url="http://localhost:3001",  # Fetch frontend component from local webserver
+    url="http://localhost:3000",  # Fetch frontend component from local webserver
 )
 
 def nba_d3_component():

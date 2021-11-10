@@ -1,4 +1,5 @@
 import React from "react"
+//import rd3 from "react-d3-library"
 import ReactDOM from "react-dom"
 import NBAD3Component from "./nba_d3_component"
 
