@@ -12,8 +12,7 @@ def config(name):
     config = configparser.ConfigParser()
     config.read('database.ini')
     params = [
-        config.get(name, 'host'),
-        config.get(name, 'port'),
+        config.get(name, 'uri'),
         config.get(name, 'user'),
         config.get(name, 'password')
     ]
@@ -22,8 +21,8 @@ def config(name):
 class LoadNeo4J():
 
     def __init__(self):
-        host, port, user, password = config('NEO4J')
-        self.driver = GraphDatabase.driver(f'neo4j://{host}:{port}', auth=(user, password))
+        uri, user, password = config('NEO4J')
+        self.driver = GraphDatabase.driver(uri, auth=(user, password))
 
     def close(self):
         self.driver.close()
@@ -115,26 +114,24 @@ class LoadNeo4J():
         #    b.run(team, '2018-06-09')
         b.trades_df = pickle.load(open('data/trades_df.p', 'rb'))
 
-        nj = LoadNeo4J()
-
-        with nj.driver.session() as session:
+        with self.driver.session() as session:
             for _, row in b.trades_df.iterrows():
                 if row['Acquired'] != '':
-                    session.write_transaction(nj.create_acquisition, row['Team'], row['Acquired'])
+                    session.write_transaction(self.create_acquisition, row['Team'], row['Acquired'])
                 if row['Relinquished'] != '':
-                    session.write_transaction(nj.create_release, row['Team'], row['Relinquished'])
+                    session.write_transaction(self.create_release, row['Team'], row['Relinquished'])
 
             
-        nj.driver.close()
+        self.driver.close()
 
 
 if __name__ =="__main__":
     n = LoadNeo4J()
-    #n.run()
+    n.run()
     #players = pickle.load(open('data/db_current_players.p', 'rb'))
-    with n.driver.session() as session:
-        players = session.read_transaction(n.get_players)
-        session.write_transaction(n.assign_attributes, players)
+    #with n.driver.session() as session:
+    #    players = session.read_transaction(n.get_players)
+    #    session.write_transaction(n.assign_attributes, players)
 
     #pickle.dump(players, open('data/db_current_players.p', 'wb'))
 

@@ -1,7 +1,13 @@
-(function() {
+//const d3 = require("d3");
+import * as d3 from 'd3';
 
-    var svg = d3.select("#svgcontainer2").append("svg");
+var svg = d3.select("#svgcontainer2").append("svg");
 
+
+(function(svg) {
+
+    
+    
     var zoom = d3.zoom().on("zoom", function(){
         svg.attr("transform", d3.event.transform);
     });
@@ -27,19 +33,6 @@
     
 
 
-/*
-
-    var check_divs = document.getElementById('c_input');
-    var inpts = check_divs.getElementsByTagName('input');
-
-    // assign function to onclick property of each checkbox
-    for (var i=0, len= inpts.length; i<len; i++) {
-        if ( inpts[i].type === 'checkbox' ) {
-            inpts[i].onclick = function() {
-                if checks.has(inputs[i])
-            }
-        }
-    } */
 
     var simulation = d3.forceSimulation(graph.nodes.concat(graph.links)) //(graph.nodes)
       //.alpha(0.7)
